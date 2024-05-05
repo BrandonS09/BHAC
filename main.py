@@ -12,7 +12,7 @@ class PostureCheckPage(CTkFrame):
         self.label.grid(row=0, column=1, pady=10)
         self.button = CTkButton(self, text="Back", command=self.hide_page)
         self.button.grid(row=1, column=1, pady=10)
-        self.timeLabel = CTkLabel(self, text="Remind me to look away from my screen every: ", font=("Helivetica", 16))
+        self.timeLabel = CTkLabel(self, text="Remind me to check my posture every: ", font=("Helivetica", 16))
         self.timeLabel.grid(row=1, column=1, pady=20, padx=10)
         self.time = CTkEntry(self, placeholder_text="Never")
         self.time.grid(row=1, column=2, pady=20)
@@ -47,7 +47,7 @@ class PostureCheckPage(CTkFrame):
 
     def actualRemind(self):
         print("look away")
-        box = CTkMessagebox.CTkMessagebox(title="Break Reminder", message=str("Its been " + self.time.get() + " minute(s)! Time to take a break!"), option_1="OK")
+        box = CTkMessagebox.CTkMessagebox(title="Break Reminder", message=str("Its been " + self.time.get() + " minute(s)! Check your posture!"), option_1="OK")
         self.check_box_status(box) 
 
     def check_box_status(self, box):
