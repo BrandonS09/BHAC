@@ -56,8 +56,8 @@ class EyeCheckPage(CTkFrame):
 
     def actualRemind(self):
         print("look away")
-        box = CTkMessagebox.CTkMessagebox(title="Screen Alarm", message=str("Its been " + self.time.get() + " minute(s)! Time to let your eyes take a break!"), option_1="OK")
-        self.check_box_status(box)
+        box = CTkMessagebox.CTkMessagebox(title="Eye Reminder", message=str("Its been " + self.time.get() + " minute(s)! Time to let your eyes take a break!"), option_1="OK")
+        self.check_box_status(box) 
 
     def check_box_status(self, box):
         if CheckDestroyed(box):
@@ -76,9 +76,49 @@ class BreakPage(CTkFrame):
         super().__init__(master)
         self.label = CTkLabel(self, text="Break Reminder", font=("Helvetica", 24))
         self.label.grid(row=0, column=1, pady=10)
+        self.timeLabel = CTkLabel(self, text="Remind me to take a break every: ", font=("Helivetica", 16))
+        self.timeLabel.grid(row=1, column=1, pady=20, padx=10)
+        self.time = CTkEntry(self, placeholder_text="Never")
+        self.time.grid(row=1, column=2, pady=20)
+        self.time.bind("<Return>", self.remind)
+        self.timeEnd = CTkLabel(self, text="minutes", font=("Helivetica", 16))
+        self.timeEnd.grid(row=1, column=3, pady=20, padx=10)
         self.button = CTkButton(self, text="Back", command=self.hide_page)
         self.button.grid(row=1, column=1, pady=10)
+        self.Breminder_id = None
 
+    def remind(self, event=None):
+        flag = True
+        prev_val.append(self.time.get())
+        try:
+            int(self.time.get())
+        except ValueError:
+            flag=False
+        if flag==True:
+            print("got: " + str(self.time.get()))
+            if (len(prev_val)>1 and prev_val[len(prev_val)-1] == prev_val[len(prev_val)-2]):
+                print("Repeated input detected.")
+                self.after_cancel(self.reminder_id)
+            if self.Breminder_id and prev_val[len(prev_val)-1] != prev_val[len(prev_val)-2]:
+                print("Canceled prev")
+                self.after_cancel(self.Breminder_id)
+            self.wait()
+    def wait(self):
+        print("wait called")
+        self.Breminder_id = self.after(int(self.time.get())*60000, self.actualRemind)
+
+    def actualRemind(self):
+        print("look away")
+        box = CTkMessagebox.CTkMessagebox(title="Break Reminder", message=str("Its been " + self.time.get() + " minute(s)! Time to take a break!"), option_1="OK")
+        self.check_box_status(box) 
+
+    def check_box_status(self, box):
+        if CheckDestroyed(box):
+            print("Box destroyed, waiting for next reminder...")
+            self.wait()
+        else:
+            print("Box still exists, checking again in 1000 milliseconds.")
+            self.after(1000, lambda: self.check_box_status(box))
     def hide_page(self):
         self.grid_forget()
         self.master.show_dashboard()
