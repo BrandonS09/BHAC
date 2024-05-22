@@ -19,7 +19,7 @@ class PostureCheckPage(CTkFrame):
         self.time.bind("<Return>", self.remind)
         self.timeEnd = CTkLabel(self, text="minutes", font=("Helivetica", 16))
         self.timeEnd.grid(row=1, column=3, pady=20, padx=10)
-        self.button = CTkButton(self, text="Back", command=self.hide_page)
+        self.button = CTkButton(self, text="Back Home", command=self.hide_page)
         self.button.grid(row=2, column=1, pady=10)
         self.PreminderID = None
     def hide_page(self):
@@ -70,7 +70,7 @@ class EyeCheckPage(CTkFrame):
         self.time.bind("<Return>", self.remind)
         self.timeEnd = CTkLabel(self, text="minutes", font=("Helivetica", 16))
         self.timeEnd.grid(row=1, column=3, pady=20, padx=10)
-        self.button = CTkButton(self, text="Back", command=self.hide_page)
+        self.button = CTkButton(self, text="Back Home", command=self.hide_page)
         self.button.grid(row=2, column=1, pady=10)
         self.reminder_id = None
 
@@ -124,7 +124,7 @@ class BreakPage(CTkFrame):
         self.time.bind("<Return>", self.remind)
         self.timeEnd = CTkLabel(self, text="minutes", font=("Helivetica", 16))
         self.timeEnd.grid(row=1, column=3, pady=20, padx=10)
-        self.button = CTkButton(self, text="Back", command=self.hide_page)
+        self.button = CTkButton(self, text="Back Home", command=self.hide_page)
         self.button.grid(row=2, column=1, pady=10)
         self.Breminder_id = None
 
@@ -169,7 +169,7 @@ class AppPage(CTkFrame):
         super().__init__(master)
         self.label = CTkLabel(self, text="App Tracker", font=("Helvetica", 24))
         self.label.grid(row=0, column=1, pady=10)
-        self.button = CTkButton(self, text="Back", command=self.hide_page)
+        self.button = CTkButton(self, text="Back Home", command=self.hide_page)
         self.button.grid(row=1, column=1, pady=10)
 
     def hide_page(self):
