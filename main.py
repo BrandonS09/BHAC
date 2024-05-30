@@ -164,14 +164,54 @@ class BreakPage(CTkFrame):
         self.grid_forget()
         self.master.show_dashboard()
 
-class AppPage(CTkFrame):
+class HydraPage(CTkFrame):
     def __init__(self, master):
         super().__init__(master)
-        self.label = CTkLabel(self, text="App Tracker", font=("Helvetica", 24))
+        self.label = CTkLabel(self, text="Hydration Reminder", font=("Helvetica", 24))
         self.label.grid(row=0, column=1, pady=10)
+        self.timeLabel = CTkLabel(self, text="Remind me to drink water every: ", font=("Helivetica", 16))
+        self.timeLabel.grid(row=1, column=1, pady=20, padx=10)
+        self.time = CTkEntry(self, placeholder_text="Never")
+        self.time.grid(row=1, column=2, pady=20)
+        self.time.bind("<Return>", self.remind)
+        self.timeEnd = CTkLabel(self, text="minutes", font=("Helivetica", 16))
+        self.timeEnd.grid(row=1, column=3, pady=20, padx=10)
         self.button = CTkButton(self, text="Back Home", command=self.hide_page)
-        self.button.grid(row=1, column=1, pady=10)
+        self.button.grid(row=2, column=1, pady=10)
+        self.Greminder_id = None
 
+    def remind(self, event=None):
+        flag = True
+        prev_val.append(self.time.get())
+        try:
+            int(self.time.get())
+        except ValueError:
+            flag=False
+        if flag==True:
+            print("got: " + str(self.time.get()))
+            if (len(prev_val)>1 and prev_val[len(prev_val)-1] == prev_val[len(prev_val)-2]):
+                print("Repeated input detected.")
+                self.after_cancel(self.Greminder_id)
+            if self.Greminder_id and prev_val[len(prev_val)-1] != prev_val[len(prev_val)-2]:
+                print("Canceled prev")
+                self.after_cancel(self.Greminder_id)
+            self.wait()
+    def wait(self):
+        print("wait called")
+        self.Greminder_id = self.after(int(self.time.get())*60000, self.actualRemind)
+
+    def actualRemind(self):
+        print("look away")
+        box = CTkMessagebox.CTkMessagebox(title="Break Reminder", message=str("Its been " + self.time.get() + " minute(s)! Time to take a break!"), option_1="OK")
+        self.check_box_status(box) 
+
+    def check_box_status(self, box):
+        if CheckDestroyed(box):
+            print("Box destroyed, waiting for next reminder...")
+            self.wait()
+        else:
+            print("Box still exists, checking again in 1000 milliseconds.")
+            self.after(1000, lambda: self.check_box_status(box))
     def hide_page(self):
         self.grid_forget()
         self.master.show_dashboard()
@@ -199,9 +239,9 @@ class App(CTk):
         
         self.eye_check_page = EyeCheckPage(self)
         self.posture_reminder_page = PostureCheckPage(self)
-        self.app_tracker_page = AppPage(self)
+        self.hydra_check_page = HydraPage(self)
         self.break_reminder_page = BreakPage(self)
-        self.dashboard_page = DashboardPage(self, self.show_eye_check, self.show_posture_check, self.show_break_remind, self.show_app_track)
+        self.dashboard_page = DashboardPage(self, self.show_eye_check, self.show_posture_check, self.show_break_remind, self.show_hydra_check)
 
         self.current_page = None
 
@@ -214,7 +254,7 @@ class App(CTk):
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
         self.sidebar_button_2 = CTkButton(self.sidebar_frame, command=self.show_posture_check, text="Posture Reminder")
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
-        self.sidebar_button_3 = CTkButton(self.sidebar_frame, command=self.show_app_track, text="App Tracker")
+        self.sidebar_button_3 = CTkButton(self.sidebar_frame, command=self.show_hydra_check, text="Hydration Reminder")
         self.sidebar_button_3.grid(row=4, column=0, padx=20, pady=10, sticky="nw")
         self.sidebar_button_4 = CTkButton(self.sidebar_frame, command=self.show_break_remind, text="Break Reminder")
         self.sidebar_button_4.grid(row=3, column=0, padx=20, pady=10)
@@ -241,9 +281,9 @@ class App(CTk):
         self.hide_dashboard()
         self.show_page(self.posture_reminder_page)
 
-    def show_app_track(self):
+    def show_hydra_check(self):
         self.hide_dashboard()
-        self.show_page(self.app_tracker_page)
+        self.show_page(self.hydra_check_page)
 
     def show_break_remind(self):
         self.hide_dashboard()
@@ -258,7 +298,7 @@ class App(CTk):
         self.breakremind = CTkButton(self, command=self.show_break_remind,text="Break Reminder", fg_color="gray85", text_color="black", hover_color="gray80", font=CTkFont(size=20, weight="bold"))
         self.breakremind.grid(row=1, column=2, padx=(20, 20), pady=(30, 0), sticky="nsew")
 
-        self.apptrack = CTkButton(self, command=self.show_app_track,text="App Tracker", fg_color="gray85", text_color="black", hover_color="gray80", font=CTkFont(size=20, weight="bold"))
+        self.apptrack = CTkButton(self, command=self.show_hydra_check,text="Hydration Reminder", fg_color="gray85", text_color="black", hover_color="gray80", font=CTkFont(size=20, weight="bold"))
         self.apptrack.grid(row=1, column=1, padx=(20, 20), pady=(30, 0), sticky="nsew")
     def show_page(self, page):
         # Hide the current page
